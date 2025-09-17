@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lander's Guide</title>
+
+  <style>
+/* ===== Base Styling ===== */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;line-height:1.6;background:#f4f4f4;color:#333;min-height:100vh}
+header{background:linear-gradient(90deg,#5a0542,#04064f);color:#fff;padding:1rem}
+header h1{text-align:center;margin-bottom:10px}
+.header-container{display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto}
+.menu{display:flex;gap:10px}
+.menu button{padding:.5rem 1rem;background:#fff;border:1px solid #ccc;border-radius:5px;cursor:pointer}
+.menu button a{text-decoration:none;color:#333;font-weight:bold}
+.menu button:hover{background:#eee}
+.theme-container{display:flex;align-items:center;gap:8px}
+.switch{position:relative;display:inline-block;width:50px;height:25px}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#ccc;transition:.4s;border-radius:25px}
+.slider:before{content:"";position:absolute;height:18px;width:18px;left:4px;bottom:4px;background:white;transition:.4s;border-radius:50%}
+input:checked+.slider{background:#009879}
+input:checked+.slider:before{transform:translateX(24px)}
+main{max-width:1000px;margin:0 auto;padding:1rem}
+.section{padding:1rem}
+.hidden{display:none!important}
+/* ===== Destinations Polaroid ===== */
+.destination-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;margin-bottom:1rem}
+.polaroid{background:#fff;padding:10px;border:1px solid #ccc;box-shadow:2px 4px 10px rgba(0,0,0,.3);text-align:center;border-radius:6px;cursor:pointer;transition:transform .2s}
+.polaroid img{width:100%;max-height:200px;object-fit:cover;border-radius:4px}
+.polaroid h3{margin-top:.5rem;font-family:"Courier New",monospace;font-size:1.1rem;color:#333 !important;} /* Always visible */
+/* Fullscreen Overlay */
+#overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);display:none;justify-content:center;align-items:center;z-index:1000;padding:1rem}
+.overlay-content{background:#fff;max-width:600px;width:100%;padding:1rem;border-radius:8px;text-align:center;position:relative}
+.overlay-content img{width:100%;max-height:300px;object-fit:cover;border-radius:6px}
+.overlay-content h3{margin:.5rem 0;color:#333}
+.close-btn{position:absolute;top:15px;left:15px;background:#ff4757;color:#fff;border:none;padding:.4rem .8rem;font-size:1rem;border-radius:5px;cursor:pointer;transition:background .3s}
+.close-btn:hover{background:#e84118}
+/* Reviews */
+.rating{display:flex;flex-direction:row-reverse;justify-content:center;font-size:1.5rem;color:#ccc;cursor:pointer;margin:.5rem 0}
+.star.active,.star:hover,.star:hover~.star{color:#ffac33}
+.review-form textarea{width:100%;margin:.5rem 0;padding:.5rem;border-radius:4px}
+.review-form button{background:#083cd7;color:#fff;border:none;padding:.5rem 1rem;border-radius:4px;cursor:pointer}
+.review-item{padding:10px;margin:10px 0;border-radius:5px;box-shadow:0 2px 5px rgba(0,0,0,.2)}
+/* Default reviews (light mode) */
+.review-item {background:#fff;color:#333;}
+/* Dark mode reviews */
+body.dark-mode .review-item {background:#222;color:#eee;}
+/* ===== About Us ===== */
+.team-container{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center}
+.team-member{width:140px;text-align:center;background:#fff;padding:.5rem;border:1px solid #ddd;border-radius:5px}
+.team-member img{width:100%;height:120px;object-fit:cover;border-radius:5px}
+.team-member h3{margin:.5rem 0;color:#333}
+.about-purpose{margin-top:1rem;text-align:center;max-width:700px;margin-left:auto;margin-right:auto}
+/* ===== Login ===== */
+.login-page{background:#1E1E1E url('Images/29009232841_5a8f60d036_b (1).jpg')center/cover no-repeat;color:#fff;min-height:calc(100vh - 80px);padding:2rem 0}
+.login-container{max-width:400px;margin:0 auto;background:#232946;padding:2rem;border-radius:12px;text-align:center}
+.login-container input{width:100%;padding:.8rem;margin:.5rem 0;border-radius:8px;border:none}
+.login-container button{width:100%;padding:.8rem;background:#007bff;border:none;color:#fff;border-radius:8px;cursor:pointer}
+.login-container button:hover{background:#0056b3}
+/* ===== Footer ===== */
+footer{background:#333;color:#fff;text-align:center;padding:1.5rem}
+footer .social-links{margin:1rem 0}
+footer .social-links a{color:#fff;margin:0 10px;text-decoration:none;font-size:1.1rem;transition:color .3s}
+footer .social-links a:hover{color:#ffac33}
+/* Dark Mode */
+body.dark-mode{background:#121212;color:#eee}
+body.dark-mode header{background:#555}
+body.dark-mode footer{background:#444}
+body.dark-mode .polaroid,
+body.dark-mode .overlay-content,
+body.dark-mode .team-member{background:#fff;color:#333}
+#home h3 {color:#333;}
+body.dark-mode #home h3 {color:#eee;}
+  </style>
+</head>
+<body>
+<header>
+  <h1>LANDER'S GUIDE</h1>
+  <div class="header-container">
+    <nav class="menu">
+      <button onclick="showSection('home')"><a href="javascript:void(0)">Home</a></button>
+      <button onclick="showSection('about')"><a href="javascript:void(0)">About Us</a></button>
+      <button id="login-btn-nav" onclick="showSection('login')"><a href="javascript:void(0)">Login</a></button>
+      <button id="logout-btn-nav" class="hidden" onclick="logout()"><a href="javascript:void(0)">Logout</a></button>
+    </nav>
+    <div class="theme-container">
+      <span>☀️</span>
+      <label class="switch"><input type="checkbox" id="theme-toggle"><span class="slider"></span></label>
+      <span>🌙</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HOME -->
+  <section id="home" class="section">
+    <h2>Destinations</h2>
+    <div class="destination-grid">
+      <article class="polaroid" onclick="openOverlay('Mainit Falls','Images/R (8).jpg')">
+        <img src="Images/R (8).jpg" alt="Mainit Falls">
+        <h3>Mainit Falls</h3>
+      </article>
+      <article class="polaroid" onclick="openOverlay('Kawa Kawa Falls','Images/jay_kawa_kawa_falls.jpg')">
+        <img src="Images/jay_kawa_kawa_falls.jpg" alt="Kawa Kawa Falls">
+        <h3>Kawa Kawa Falls</h3>
+      </article>
+      <article class="polaroid" onclick="openOverlay('Linao ni Vecto Falls','Images/linao-ni-vecto-falls-tablas-14-800x534.jpg')">
+        <img src="Images/linao-ni-vecto-falls-tablas-14-800x534.jpg" alt="Linao ni Vecto Falls">
+        <h3>Linao ni Vecto Falls</h3>
+      </article>
+    </div>
+    <h3>All Reviews</h3>
+    <div id="reviews-list"></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section hidden">
+    <h2>About Us</h2>
+    <div class="team-container">
+      <div class="team-member"><img src="Images/lander.jpg"><h3>Lander Jay Pablo</h3><p>2nd Yr. BSIT</p></div>
+      <div class="team-member"><img src="Images/ronaldo.jpg"><h3>Ronaldo Romualdo Jr.</h3><p>2nd Yr. BSIT</p></div>
+      <div class="team-member"><img src="Images/angel.jpg"><h3>Angel Joy Bangalisan</h3><p>2nd Yr. BSIT</p></div>
+      <div class="team-member"><img src="Images/red.jpg"><h3>Red Villareal</h3><p>2nd Yr. BSIT</p></div>
+    </div>
+    <p class="about-purpose">
+      <strong>Purpose:</strong> Lander's Guide was created to highlight the hidden gems of Tablas Island.  
+      Our mission is to help travelers discover breathtaking waterfalls, peaceful nature spots, and cultural treasures — 
+      while giving locals a platform to share their own experiences and reviews.
+    </p>
+  </section>
+
+  <!-- LOGIN -->
+  <section id="login" class="section hidden login-page">
+    <h1 style="text-align:center;">WELCOME TO LANDER'S GUIDE</h1>
+    <div class="login-container">
+      <h2>Login</h2>
+      <label>Username: admin</label>
+      <input type="text" id="username" placeholder="Enter your username">
+      <label>Password: 12345</label>
+      <input type="password" id="password" placeholder="Enter your password">
+      <button id="login-btn">Login</button>
+    </div>
+  </section>
+</main>
+
+<!-- Overlay for full destination -->
+<div id="overlay">
+  <div class="overlay-content">
+    <button class="close-btn" onclick="closeOverlay()">⬅ Back</button>
+    <img id="overlay-img" src="">
+    <h3 id="overlay-title"></h3>
+    <div class="rating" data-rating="0">
+      <span class="star" data-value="5">&#9733;</span>
+      <span class="star" data-value="4">&#9733;</span>
+      <span class="star" data-value="3">&#9733;</span>
+      <span class="star" data-value="2">&#9733;</span>
+      <span class="star" data-value="1">&#9733;</span>
+    </div>
+    <form class="review-form">
+      <textarea placeholder="Write your review..."></textarea>
+      <button type="submit">Submit Review</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===== Footer with Socials ===== -->
+<footer>
+  <p>&copy; 2025 LANDER'S GUIDE. All Rights Reserved.</p>
+  <div class="social-links">
+    <a href="https://facebook.com" target="_blank">Facebook</a>
+    <a href="https://instagram.com" target="_blank">Instagram</a>
+    <a href="https://twitter.com" target="_blank">Twitter</a>
+    <a href="https://youtube.com" target="_blank">YouTube</a>
+  </div>
+</footer>
+
+<script>
+// Section switcher
+function showSection(name){
+  ['home','about','login'].forEach(id=>{
+    document.getElementById(id).classList.add('hidden');
+  });
+  document.getElementById(name).classList.remove('hidden');
+}
+
+// Dark mode
+const themeToggle=document.getElementById('theme-toggle');
+if(localStorage.getItem('theme')==='dark'){
+  document.body.classList.add('dark-mode');
+  themeToggle.checked=true;
+}
+themeToggle.addEventListener('change',()=>{
+  document.body.classList.toggle('dark-mode');
+  localStorage.setItem('theme',document.body.classList.contains('dark-mode')?'dark':'light');
+});
+
+// Overlay
+function openOverlay(title,img){
+  document.getElementById('overlay').style.display='flex';
+  document.getElementById('overlay-title').innerText=title;
+  document.getElementById('overlay-img').src=img;
+  document.querySelector('#overlay .rating').dataset.rating=0;
+  document.querySelectorAll('#overlay .star').forEach(s=>s.classList.remove('active'));
+}
+function closeOverlay(){document.getElementById('overlay').style.display='none'}
+
+// Ratings
+function initRatings(){
+  document.querySelectorAll('.rating').forEach(rating=>{
+    rating.querySelectorAll('.star').forEach(star=>{
+      star.addEventListener('click',()=>{
+        const val=star.dataset.value;
+        rating.dataset.rating=val;
+        rating.querySelectorAll('.star').forEach(s=>{
+          s.classList.toggle('active',s.dataset.value<=val);
+        });
+      });
+    });
+  });
+}
+initRatings();
+
+// Reviews
+document.addEventListener('submit',function(e){
+  if(e.target.classList.contains('review-form')){
+    e.preventDefault();
+    if(localStorage.getItem("isLoggedIn")!=="true"){
+      alert("You have to log in first.");
+      return;
+    }
+    const text=e.target.querySelector('textarea').value.trim();
+    if(!text) return alert("Please write a review.");
+    const dest=document.getElementById('overlay-title').innerText;
+    const stars=e.target.closest('.overlay-content').querySelector('.rating').dataset.rating;
+    const username=localStorage.getItem("username")||"Guest";
+    let reviews=JSON.parse(localStorage.getItem('reviews')||'[]');
+    reviews.push({dest,text,stars,user:username});
+    localStorage.setItem('reviews',JSON.stringify(reviews));
+    e.target.querySelector('textarea').value='';
+    alert("You have submitted your review successfully.");
+    loadReviews();
+    closeOverlay();
+  }
+});
+function loadReviews(){
+  const list=document.getElementById('reviews-list');
+  list.innerHTML='';
+  (JSON.parse(localStorage.getItem('reviews')||'[]')).forEach(r=>{
+    const div=document.createElement('div');
+    div.className='review-item';
+    div.innerHTML=`<strong>${r.user}</strong> reviewed <em>${r.dest}</em>: ${r.text}<br>⭐ ${r.stars} Stars`;
+    list.appendChild(div);
+  });
+}
+loadReviews();
+
+// Login
+document.getElementById('login-btn').addEventListener('click',()=>{
+  const u=document.getElementById('username').value;
+  const p=document.getElementById('password').value;
+  if(u==='admin'&&p==='12345'){
+    alert("Login successful!");
+    localStorage.setItem("isLoggedIn","true");
+    localStorage.setItem("username",u);
+    showSection('home');
+    document.getElementById('login-btn-nav').classList.add('hidden');
+    document.getElementById('logout-btn-nav').classList.remove('hidden');
+  }else alert("Invalid credentials.");
+});
+function logout(){
+  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("username");
+  alert("Logged out.");
+  showSection('login');
+  document.getElementById('login-btn-nav').classList.remove('hidden');
+  document.getElementById('logout-btn-nav').classList.add('hidden');
+}
+// Check session
+if(localStorage.getItem("isLoggedIn")==="true"){
+  showSection('home');
+  document.getElementById('login-btn-nav').classList.add('hidden');
+  document.getElementById('logout-btn-nav').classList.remove('hidden');
+}else{
+  showSection('login');
+}
+</script>
+</body>
+</html>
